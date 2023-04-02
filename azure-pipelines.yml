@@ -30,21 +30,23 @@ steps:
     source atenv/bin/activate
     python -m pip install --upgrade pip
     pip install -r requirements.txt
+  workingDirectory: $(projectRoot)
   displayName: 'Install dependencies'
 
 # - script: |
 #     pip install pytest pytest-azurepipelines
 #     pytest
 #   displayName: 'pytest'
+
 - task: ArchiveFiles@2
-  displayName: 'Archive files'
   inputs:
-    rootFolderOrFile: '$(Build.BinariesDirectory)'
+    rootFolderOrFile: '$(Build.SourcesDirectory)'
     includeRootFolder: false
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/Application$(Build.BuildId).zip'
     replaceExistingArchive: true
-
-- upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+    verbose: # (no value); this input is optional
+- publish: $(Build.ArtifactStagingDirectory)/Application$(Build.BuildId).zip
   displayName: 'Upload package'
   artifact: drop
+   
